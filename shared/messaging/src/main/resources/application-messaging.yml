@@ -1,0 +1,75 @@
+# Messaging Configuration for Redpanda
+spring:
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:19092}
+    
+    # Producer Configuration
+    producer:
+      client-id: ${KAFKA_PRODUCER_CLIENT_ID:learning-platform-producer}
+      acks: ${KAFKA_PRODUCER_ACKS:all}
+      retries: ${KAFKA_PRODUCER_RETRIES:3}
+      batch-size: ${KAFKA_PRODUCER_BATCH_SIZE:16384}
+      linger-ms: ${KAFKA_PRODUCER_LINGER_MS:5}
+      buffer-memory: ${KAFKA_PRODUCER_BUFFER_MEMORY:33554432}
+      compression-type: ${KAFKA_PRODUCER_COMPRESSION_TYPE:snappy}
+      max-in-flight-requests: ${KAFKA_PRODUCER_MAX_IN_FLIGHT_REQUESTS:5}
+      request-timeout-ms: ${KAFKA_PRODUCER_REQUEST_TIMEOUT_MS:30000}
+      delivery-timeout-ms: ${KAFKA_PRODUCER_DELIVERY_TIMEOUT_MS:120000}
+      
+    # Consumer Configuration
+    consumer:
+      group-id: ${KAFKA_CONSUMER_GROUP_ID:learning-platform-group}
+      auto-offset-reset: ${KAFKA_CONSUMER_AUTO_OFFSET_RESET:earliest}
+      enable-auto-commit: ${KAFKA_CONSUMER_ENABLE_AUTO_COMMIT:false}
+      session-timeout-ms: ${KAFKA_CONSUMER_SESSION_TIMEOUT_MS:30000}
+      heartbeat-interval-ms: ${KAFKA_CONSUMER_HEARTBEAT_INTERVAL_MS:10000}
+      max-poll-records: ${KAFKA_CONSUMER_MAX_POLL_RECORDS:500}
+      max-poll-interval-ms: ${KAFKA_CONSUMER_MAX_POLL_INTERVAL_MS:300000}
+      fetch-min-size: ${KAFKA_CONSUMER_FETCH_MIN_SIZE:1}
+      fetch-max-wait-ms: ${KAFKA_CONSUMER_FETCH_MAX_WAIT_MS:500}
+      
+    # Listener Configuration
+    listener:
+      concurrency: ${KAFKA_LISTENER_CONCURRENCY:3}
+      poll-timeout: ${KAFKA_LISTENER_POLL_TIMEOUT:3000}
+      
+    # Topic Configuration
+    topics:
+      partitions: ${KAFKA_TOPICS_PARTITIONS:3}
+      replication-factor: ${KAFKA_TOPICS_REPLICATION_FACTOR:1}
+      retention-ms: ${KAFKA_TOPICS_RETENTION_MS:604800000}
+      cleanup-policy: ${KAFKA_TOPICS_CLEANUP_POLICY:delete}
+      compression-type: ${KAFKA_TOPICS_COMPRESSION_TYPE:snappy}
+
+# WebSocket Configuration
+websocket:
+  enabled: ${WEBSOCKET_ENABLED:true}
+  allowed-origins: ${WEBSOCKET_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:5173}
+  heartbeat-interval: ${WEBSOCKET_HEARTBEAT_INTERVAL:25000}
+  disconnect-delay: ${WEBSOCKET_DISCONNECT_DELAY:5000}
+
+# Logging Configuration
+logging:
+  level:
+    com.learningplatform.messaging: ${MESSAGING_LOG_LEVEL:INFO}
+    org.springframework.kafka: ${KAFKA_LOG_LEVEL:WARN}
+    org.apache.kafka: ${KAFKA_CLIENT_LOG_LEVEL:WARN}
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level [%X{correlationId}] %logger{36} - %msg%n"
+
+# Management and Monitoring
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: learning-platform
+      service: messaging
